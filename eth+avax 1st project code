@@ -1,0 +1,35 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract MassToWeightBySatiksha {
+    uint private constant EARTH_GRAVITY = 10;
+    address private immutable owner;
+
+    constructor() {
+        owner = msg.sender;
+    }
+
+    function computeWeight(uint mass, uint gravity) public pure returns (uint) {
+        require(mass > 0, "Mass must be greater than zero.");
+        require(gravity > 0, "Gravity must be greater than zero.");
+        uint weight = mass * gravity;
+        assert(weight / mass == gravity); // Check for multiplication overflow
+        return weight;
+    }
+
+    function calculateEarthWeight(uint mass) public view returns (uint) {
+        require(msg.sender == owner, "Caller is not the owner.");
+        require(mass > 0, "Mass must be greater than zero.");
+        uint weight = mass * EARTH_GRAVITY;
+        if (weight == 0) {
+            revert("Calculated weight is zero, which is invalid.");
+        }
+        assert(weight / mass == EARTH_GRAVITY); // Check for multiplication overflow
+        return weight;
+    }
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only the owner can call this function.");
+        _;
+    }
+}
