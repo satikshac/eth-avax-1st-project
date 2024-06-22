@@ -1,18 +1,17 @@
-# MassToWeightBySatiksha Solidity Contract
+# ErrorHandling Solidity Contract
 
 ## Overview
 
-MassToWeightBySatiksha is a Solidity contract for calculating weight based on mass and gravity. It includes functions for custom gravity values and a default Earth gravity, with robust error handling and owner-only access control.
+ErrorHandling is a Solidity contract designed to demonstrate various error handling mechanisms including require(), assert(), and revert(). It manages a counter and restricts certain actions to the contract owner, ensuring robust error checking and access control.
 
 ## Features
 
-- Compute Weight: Calculates weight given mass and gravity.
-- Calculate Earth Weight: Calculates weight using Earth gravity.
-- Access Control: Owner-restricted functions.
+- Owner-Restricted Actions: Only the owner can perform certain actions.
+- Counter Management: Increment and reset a counter with error handling.
 
 ## Prerequisites
 
-- Solidity ^0.8.0
+- Solidity >=0.7.0
 - Ethereum development environment (Remix, Truffle, Hardhat)
 - Ethereum wallet (MetaMask)
 
@@ -20,45 +19,47 @@ MassToWeightBySatiksha is a Solidity contract for calculating weight based on ma
 
 ### State Variables
 
-- EARTH_GRAVITY (constant): Earth's gravity (10).
-- owner (immutable): Contract owner.
+- satiksha (address): The contract owner.
+- count (uint): Counter variable.
 
 ### Constructor
 
-Sets the contract deployer as the owner.
+Sets the contract deployer as the owner (satiksha).
 
 ### Functions
 
-#### computeWeight
+#### call
 
-- Purpose: Calculate weight using custom gravity.
-- Visibility: Public, pure
-- Parameters: mass (uint), gravity (uint)
-- Returns: Calculated weight (uint)
-- Errors: Checks for positive mass and gravity, prevents overflow.
+- *Purpose*: Increments the counter.
+- *Visibility*: Public
+- *Errors*: Uses require() to ensure the caller is the owner (satiksha).
 
-#### calculateEarthWeight
+#### incrementCount
 
-- Purpose: Calculate weight using Earth gravity.
-- Visibility: Public, view
-- Parameters: mass (uint)
-- Returns: Calculated weight (uint)
-- Errors: Owner-only, checks positive mass, prevents zero weight and overflow.
+- *Purpose*: Increments the counter.
+- *Visibility*: Public
+- *Errors*: Uses assert() to verify the counter is always positive after increment.
 
+#### resetCount
 
+- *Purpose*: Resets the counter to zero.
+- *Visibility*: Public
+- *Errors*: Uses revert() to ensure only the owner (satiksha) can reset the counter.
 
 ## Usage
 
-1. Deploy: Compile and deploy using an Ethereum development environment.
-2. Compute Weight: computeWeight(mass, gravity) for custom calculations.
-3. Earth Weight: calculateEarthWeight(mass) for Earth gravity (owner-only).
+1. *Deploy*: Compile and deploy using an Ethereum development environment.
+2. *Call*: Use call() to increment the counter (owner-only).
+3. *Increment Count*: Use incrementCount() to increment the counter.
+4. *Reset Count*: Use resetCount() to reset the counter to zero (owner-only).
 
 ## Error Handling
 
-- require(): Validates input conditions.
-- assert(): Ensures no overflows.
-- revert(): Reverts on invalid weight.
+- *require()*: Ensures the caller is the owner.
+- *assert()*: Verifies the counter remains positive after increment.
+- *revert()*: Reverts transaction if the caller is not the owner during reset.
 
 ## License
 
-Licensed under the MIT License.
+This project is unlicensed.
+
