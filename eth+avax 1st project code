@@ -1,35 +1,32 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+// SPDX-License-Identifier: Unlicensed
+pragma solidity >=0.7.0;
 
-contract MassToWeightBySatiksha {
-    uint private constant EARTH_GRAVITY = 10;
-    address private immutable owner;
+contract ErrorHandling {
+    address public satiksha;
+    uint public count;
 
     constructor() {
-        owner = msg.sender;
+        satiksha = msg.sender;
     }
 
-    function computeWeight(uint mass, uint gravity) public pure returns (uint) {
-        require(mass > 0, "Mass must be greater than zero.");
-        require(gravity > 0, "Gravity must be greater than zero.");
-        uint weight = mass * gravity;
-        assert(weight / mass == gravity); // Check for multiplication overflow
-        return weight;
+    // Function using require() to check a condition
+    function call() public {
+        count++;
+        require(msg.sender == satiksha, "Caller is not satiksha");
     }
 
-    function calculateEarthWeight(uint mass) public view returns (uint) {
-        require(msg.sender == owner, "Caller is not the owner.");
-        require(mass > 0, "Mass must be greater than zero.");
-        uint weight = mass * EARTH_GRAVITY;
-        if (weight == 0) {
-            revert("Calculated weight is zero, which is invalid.");
+    // Function using assert() to verify invariants
+    function incrementCount() public {
+        count++;
+        assert(count > 0); // This should always be true after incrementing
+    }
+
+    // Function using revert() for custom error handling
+    function resetCount() public {
+        if (msg.sender != satiksha) {
+            revert("Caller is not satiksha, cannot reset count");
         }
-        assert(weight / mass == EARTH_GRAVITY); // Check for multiplication overflow
-        return weight;
+        count = 0;
     }
 
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Only the owner can call this function.");
-        _;
-    }
-}
+    
